@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
   if (!gameSession) {
     const { data: newSession } = await supabase
       .from('game_sessions')
-      .insert({ user_id: userId, username, date: today, guesses: [guess] })
+      .insert({ user_id: userId, username, date: today, guesses: [guess], solved: correct })
       .select()
       .single();
     gameSession = newSession;

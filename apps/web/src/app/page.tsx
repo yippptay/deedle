@@ -26,8 +26,8 @@ export default function HomePage() {
       {/* Header */}
       <div className="w-full max-w-xl flex justify-between items-center mb-10">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Who Said It?</h1>
-          <p className="text-gray-400 text-sm">Guess the author of today's quote</p>
+          <h1 className="text-3xl font-bold tracking-tight">KeksDeedle</h1>
+          <p className="text-gray-400 text-sm">Today's shame</p>
         </div>
         <AuthBar />
       </div>
