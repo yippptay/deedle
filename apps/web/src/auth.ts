@@ -9,7 +9,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    // Attach the Discord user ID to the session so server code can trust it
     async session({ session, token }) {
       if (session.user) {
         (session.user as any).id = token.sub;

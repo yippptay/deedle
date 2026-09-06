@@ -1,19 +1,19 @@
 'use client';
 
+import { useSession, signIn } from 'next-auth/react';
 import { useGame } from '@/hooks/useGame';
+import { AuthBar } from '@/components/AuthBar';
 
 const MAX_GUESSES = 5;
 
-// For now, use a placeholder user. Replace with real auth in Section 7.
-const TEMP_USER = { id: 'guest', username: 'Guest' };
-
 export default function HomePage() {
-  const game = useGame(TEMP_USER.id, TEMP_USER.username);
+  const { data: session, status } = useSession();
+  const game = useGame();
 
-  if (game.loading) {
+  if (status === 'loading' || game.loading) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-gray-950 text-white">
-        <p className="text-gray-400 animate-pulse">Loading today's quote...</p>
+        <p className="text-gray-400 animate-pulse">Loading...</p>
       </main>
     );
   }
@@ -23,8 +23,26 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-gray-950 text-white flex flex-col items-center py-16 px-4">
-      <h1 className="text-3xl font-bold mb-2 tracking-tight">Who Said It?</h1>
-      <p className="text-gray-400 mb-10 text-sm">Guess the author of today's quote</p>
+      {/* Header */}
+      <div className="w-full max-w-xl flex justify-between items-center mb-10">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Who Said It?</h1>
+          <p className="text-gray-400 text-sm">Guess the author of today's quote</p>
+        </div>
+        <AuthBar />
+      </div>
+
+      {/* Login Prompt */}
+      {!session && (
+        <div className="w-full max-w-xl bg-indigo-900/40 border border-indigo-700 rounded-xl p-4 mb-6 text-center">
+          <p className="text-indigo-200 text-sm">
+            <button onClick={() => signIn('discord')} className="underline font-semibold">
+              Login with Discord
+            </button>{' '}
+            to submit guesses and appear on the leaderboard.
+          </p>
+        </div>
+      )}
 
       {/* Quote Card */}
       <div className="max-w-xl w-full bg-gray-800 rounded-2xl p-8 mb-8 shadow-xl">
@@ -43,13 +61,11 @@ export default function HomePage() {
       {/* Game Over Banner */}
       {game.gameOver && (
         <div className={`w-full max-w-xl rounded-xl p-4 mb-6 text-center font-semibold ${
-          game.solved
-            ? 'bg-green-900 text-green-200'
-            : 'bg-red-900 text-red-200'
+          game.solved ? 'bg-green-900 text-green-200' : 'bg-red-900 text-red-200'
         }`}>
           {game.solved
-            ? `✅ Nice! You got it in ${game.guesses.length} guess${game.guesses.length === 1 ? '' : 'es'}!`
-            : `❌ Better luck tomorrow! It was ${game.revealedAuthor}.`
+            ? `Got it in ${game.guesses.length} guess${game.guesses.length === 1 ? '' : 'es'}!`
+            : `Better luck tomorrow! It was ${game.revealedAuthor}.`
           }
         </div>
       )}
@@ -60,17 +76,11 @@ export default function HomePage() {
           <p className="text-xs text-gray-500 uppercase tracking-widest mb-2">Your guesses</p>
           <div className="flex flex-wrap gap-2">
             {game.guesses.map((guess, i) => {
-              const isLast = i === game.guesses.length - 1;
-              const isCorrect = game.solved && isLast;
+              const isCorrect = game.solved && i === game.guesses.length - 1;
               return (
-                <span
-                  key={guess}
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    isCorrect
-                      ? 'bg-green-700 text-green-100'
-                      : 'bg-red-900 text-red-200 line-through'
-                  }`}
-                >
+                <span key={guess} className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  isCorrect ? 'bg-green-700 text-green-100' : 'bg-red-900 text-red-200 line-through'
+                }`}>
                   {guess}
                 </span>
               );
@@ -79,24 +89,28 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Guess Picker */}
+      {/* Guess Picker — only shown once signed in, since the API requires a real session */}
       {!game.gameOver && (
-        <div className="w-full max-w-xl">
-          <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">
-            {remainingGuesses} guess{remainingGuesses === 1 ? '' : 'es'} remaining
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {availableAuthors.map(author => (
-              <button
-                key={author}
-                onClick={() => game.makeGuess(author)}
-                className="px-4 py-2 bg-gray-700 hover:bg-indigo-600 text-white rounded-full text-sm transition-colors duration-150 cursor-pointer"
-              >
-                {author}
-              </button>
-            ))}
+        session ? (
+          <div className="w-full max-w-xl">
+            <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">
+              {remainingGuesses} guess{remainingGuesses === 1 ? '' : 'es'} remaining — pick a name
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {availableAuthors.map(author => (
+                <button
+                  key={author}
+                  onClick={() => game.makeGuess(author)}
+                  className="px-4 py-2 bg-gray-700 hover:bg-indigo-600 text-white rounded-full text-sm transition-colors duration-150 cursor-pointer"
+                >
+                  {author}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : (
+          <p className="text-gray-500 text-sm">Sign in with Discord above to submit a guess.</p>
+        )
       )}
     </main>
   );

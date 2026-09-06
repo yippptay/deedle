@@ -13,7 +13,7 @@ export interface GameState {
   makeGuess: (author: string) => Promise<void>;
 }
 
-export function useGame(userId: string, username: string): GameState {
+export function useGame(): GameState {
   const [quoteText, setQuoteText] = useState<string | null>(null);
   const [authors, setAuthors] = useState<string[]>([]);
   const [guesses, setGuesses] = useState<string[]>([]);
