@@ -44,7 +44,7 @@ export function useGame(userId: string, username: string): GameState {
     const res = await fetch('/api/guess', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ guess: author, userId, username }),
+      body: JSON.stringify({ guess: author }),
     });
 
     const data = await res.json();
