@@ -1,0 +1,12 @@
+{
+  "name": "keksdeedle",
+  "private": true,
+  "scripts": {
+    "bot": "pnpm --filter bot dev",
+    "web": "pnpm --filter web dev"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
