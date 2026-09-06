@@ -4,7 +4,7 @@ import { useSession, signIn } from 'next-auth/react';
 import { useGame } from '@/hooks/useGame';
 import { AuthBar } from '@/components/AuthBar';
 
-const MAX_GUESSES = 5;
+const MAX_GUESSES = 2;
 
 export default function HomePage() {
   const { data: session, status } = useSession();
@@ -19,7 +19,7 @@ export default function HomePage() {
   }
 
   const remainingGuesses = MAX_GUESSES - game.guesses.length;
-  const availableAuthors = game.authors.filter(a => !game.guesses.includes(a));
+  const availableOptions = game.options.filter(o => !game.guesses.includes(o.username));
 
   return (
     <main className="min-h-screen bg-gray-950 text-white flex flex-col items-center py-16 px-4">
@@ -64,8 +64,8 @@ export default function HomePage() {
           game.solved ? 'bg-green-900 text-green-200' : 'bg-red-900 text-red-200'
         }`}>
           {game.solved
-            ? `Got it in ${game.guesses.length} guess${game.guesses.length === 1 ? '' : 'es'}!`
-            : `Better luck tomorrow! It was ${game.revealedAuthor}.`
+            ? `✅ Got it in ${game.guesses.length} guess${game.guesses.length === 1 ? '' : 'es'}!`
+            : `❌ Better luck tomorrow! It was ${game.revealedAuthor}.`
           }
         </div>
       )}
@@ -97,13 +97,16 @@ export default function HomePage() {
               {remainingGuesses} guess{remainingGuesses === 1 ? '' : 'es'} remaining — pick a name
             </p>
             <div className="flex flex-wrap gap-2">
-              {availableAuthors.map(author => (
+              {availableOptions.map(option => (
                 <button
-                  key={author}
-                  onClick={() => game.makeGuess(author)}
+                  key={option.username}
+                  onClick={() => game.makeGuess(option.username)}
                   className="px-4 py-2 bg-gray-700 hover:bg-indigo-600 text-white rounded-full text-sm transition-colors duration-150 cursor-pointer"
                 >
-                  {author}
+                  {option.username}
+                  {option.nickname && option.nickname !== option.username && (
+                    <span className="text-gray-400 text-xs ml-1">(aka {option.nickname})</span>
+                  )}
                 </button>
               ))}
             </div>

@@ -7,7 +7,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY!
 );
 
-const MAX_GUESSES = 5;
+const MAX_GUESSES = 2;
 
 export async function POST(req: NextRequest) {
   // Identity comes from the server session now, not the request body.

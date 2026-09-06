@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Who Said It?",
-  description: "Guess the author of your server's best quotes",
+  title: "KeksDeedle",
+  description: "Guess the author of your server's hall of shame",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

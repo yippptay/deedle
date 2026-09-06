@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react';
 
-const MAX_GUESSES = 5;
+const MAX_GUESSES = 2;
+
+export interface GuessOption {
+  username: string;
+  nickname: string | null;
+}
 
 export interface GameState {
   quoteText: string | null;
-  authors: string[];
+  options: GuessOption[];
   guesses: string[];
   solved: boolean;
   gameOver: boolean;
@@ -15,7 +20,7 @@ export interface GameState {
 
 export function useGame(): GameState {
   const [quoteText, setQuoteText] = useState<string | null>(null);
-  const [authors, setAuthors] = useState<string[]>([]);
+  const [options, setOptions] = useState<GuessOption[]>([]);
   const [guesses, setGuesses] = useState<string[]>([]);
   const [solved, setSolved] = useState(false);
   const [gameOver, setGameOver] = useState(false);
@@ -24,15 +29,11 @@ export function useGame(): GameState {
 
   useEffect(() => {
     async function init() {
-      const [quoteRes, authorsRes] = await Promise.all([
-        fetch('/api/daily'),
-        fetch('/api/authors'),
-      ]);
-      const quote = await quoteRes.json();
-      const { authors } = await authorsRes.json();
+      const res = await fetch('/api/daily');
+      const quote = await res.json();
 
       setQuoteText(quote.text);
-      setAuthors(authors);
+      setOptions(quote.options ?? []);
       setLoading(false);
     }
     init();
@@ -54,5 +55,5 @@ export function useGame(): GameState {
     if (data.author) setRevealedAuthor(data.author);
   }
 
-  return { quoteText, authors, guesses, solved, gameOver, revealedAuthor, loading, makeGuess };
+  return { quoteText, options, guesses, solved, gameOver, revealedAuthor, loading, makeGuess };
 }
