@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 
-const MAX_GUESSES = 2;
-
 export interface GuessOption {
   username: string;
   nickname: string | null;
@@ -34,6 +32,11 @@ export function useGame(): GameState {
 
       setQuoteText(quote.text);
       setOptions(quote.options ?? []);
+      // Resume any existing progress for today, instead of assuming a fresh game
+      setGuesses(quote.guesses ?? []);
+      setSolved(quote.solved ?? false);
+      setGameOver(quote.gameOver ?? false);
+      if (quote.author) setRevealedAuthor(quote.author);
       setLoading(false);
     }
     init();

@@ -2,9 +2,7 @@
 
 import { useSession, signIn } from 'next-auth/react';
 import { useGame } from '@/hooks/useGame';
-import { AuthBar } from '@/components/AuthBar';
-
-const MAX_GUESSES = 2;
+import { MAX_GUESSES } from '@/lib/constants';
 
 export default function HomePage() {
   const { data: session, status } = useSession();
@@ -12,7 +10,7 @@ export default function HomePage() {
 
   if (status === 'loading' || game.loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-gray-950 text-white">
+      <main className="flex-1 flex items-center justify-center bg-gray-950 text-white">
         <p className="text-gray-400 animate-pulse">Loading...</p>
       </main>
     );
@@ -22,17 +20,9 @@ export default function HomePage() {
   const availableOptions = game.options.filter(o => !game.guesses.includes(o.username));
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white flex flex-col items-center py-16 px-4">
-      {/* Header */}
-      <div className="w-full max-w-xl flex justify-between items-center mb-10">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">KeksDeedle</h1>
-          <p className="text-gray-400 text-sm">Today's shame</p>
-        </div>
-        <AuthBar />
-      </div>
+    <main className="flex-1 bg-gray-950 text-white flex flex-col items-center py-10 px-4">
+      <h2 className="text-xl font-semibold text-gray-300 mb-6">Today's Quote</h2>
 
-      {/* Login Prompt */}
       {!session && (
         <div className="w-full max-w-xl bg-indigo-900/40 border border-indigo-700 rounded-xl p-4 mb-6 text-center">
           <p className="text-indigo-200 text-sm">
@@ -44,7 +34,6 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Quote Card */}
       <div className="max-w-xl w-full bg-gray-800 rounded-2xl p-8 mb-8 shadow-xl">
         <p className="text-xl italic text-gray-100 leading-relaxed">
           "{game.quoteText}"
@@ -58,19 +47,17 @@ export default function HomePage() {
         </p>
       </div>
 
-      {/* Game Over Banner */}
       {game.gameOver && (
         <div className={`w-full max-w-xl rounded-xl p-4 mb-6 text-center font-semibold ${
           game.solved ? 'bg-green-900 text-green-200' : 'bg-red-900 text-red-200'
         }`}>
           {game.solved
-            ? `✅ Got it in ${game.guesses.length} guess${game.guesses.length === 1 ? '' : 'es'}!`
-            : `❌ Better luck tomorrow! It was ${game.revealedAuthor}.`
+            ? `Got it in ${game.guesses.length} guess${game.guesses.length === 1 ? '' : 'es'}!`
+            : `Better luck tomorrow! It was ${game.revealedAuthor}.`
           }
         </div>
       )}
 
-      {/* Guess History */}
       {game.guesses.length > 0 && (
         <div className="w-full max-w-xl mb-6">
           <p className="text-xs text-gray-500 uppercase tracking-widest mb-2">Your guesses</p>
@@ -89,7 +76,6 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Guess Picker — only shown once signed in, since the API requires a real session */}
       {!game.gameOver && (
         session ? (
           <div className="w-full max-w-xl">

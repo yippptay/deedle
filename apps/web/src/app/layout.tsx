@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { Nav } from "@/components/Nav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "KeksDeedle",
-  description: "Guess the author of your server's hall of shame",
+  title: "Who Said It?",
+  description: "Guess the author of your server's best quotes",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -24,8 +25,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <Providers>{children}</Providers>
+      <body className="min-h-full flex flex-col bg-gray-950">
+        <Providers>
+          <Nav />
+          {children}
+        </Providers>
       </body>
     </html>
   );
