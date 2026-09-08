@@ -71,7 +71,7 @@ async function parseQuote(message) {
   if (BLACKLISTED_MESSAGE_IDS.has(message.id)) return null;
 
   const content = message.content.trim();
-  const match = content.match(/^`?["""](.+?)["""]`?\s*[-—–]\s*@?([^,]+)/s);
+  const match = content.match(/^`*["""](.+?)["""]`*\s*[-—–]\s*@?([^,]+)/s);
   if (!match) return null;
 
   let author = match[2].trim();

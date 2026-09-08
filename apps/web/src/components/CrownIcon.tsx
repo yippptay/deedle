@@ -1,19 +1,31 @@
 'use client';
 
-import { useEffect, useId, useRef } from 'react';
+import { useEffect, useId, useState } from 'react';
 
 // "Boiling line" wobble, per:
 // https://camillovisini.com/coding/simulating-hand-drawn-motion-with-svg-filters
 //
 // feTurbulence generates a noise field; feDisplacementMap uses it to nudge
-// the image's pixels around. We then re-roll the turbulence's baseFrequency
-// (and seed, so the noise pattern itself changes) on an interval, which
-// reads as a subtle hand-drawn jitter rather than a static distortion.
+// the image's pixels around. We animate baseFrequency/seed with native SVG
+// <animate> (SMIL) rather than JS setInterval + setAttribute — browsers are
+// unreliable about repainting SVG filters when attributes are changed
+// imperatively from JS (long-standing Chrome/WebKit bugs), which is what
+// caused the "speeds up while the mouse moves, stalls when it stops" glitch:
+// updates were happening on schedule, but only got rendered whenever mouse
+// movement forced an unrelated repaint anyway. Native SMIL runs on the
+// browser's own animation clock and doesn't have this problem.
 
-const BASE_FREQUENCY = 0.08;
+const BASE_FREQUENCY = 0.06;
 const OFFSETS = [-0.02, 0.01, -0.01, 0.02];
 const DISPLACEMENT_SCALE = 2.5;
-const INTERVAL_MS = 100;
+const STEP_MS = 100;
+
+const FREQUENCY_VALUES = [...OFFSETS, OFFSETS[0]]
+  .map(o => (BASE_FREQUENCY + o).toFixed(3))
+  .join(';');
+const SEED_VALUES = '1;2;3;4;1';
+const KEY_TIMES = '0;0.25;0.5;0.75;1';
+const DUR = `${(OFFSETS.length * STEP_MS) / 1000}s`;
 
 interface CrownIconProps {
   /** Path to your crown image, e.g. "/crown.png" (relative to /public). */
@@ -23,26 +35,12 @@ interface CrownIconProps {
 }
 
 export function CrownIcon({ src, size = 22, className = '' }: CrownIconProps) {
-  const turbulenceRef = useRef<SVGFETurbulenceElement>(null);
   const filterId = `crown-boil-${useId()}`;
+  const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
-    const node = turbulenceRef.current;
-    if (!node) return;
-
     // Respect the user's motion preference — just show a static crown.
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) return;
-
-    let tick = 0;
-    const interval = setInterval(() => {
-      const offset = OFFSETS[tick % OFFSETS.length];
-      node.setAttribute('baseFrequency', String(BASE_FREQUENCY + offset));
-      node.setAttribute('seed', String(tick));
-      tick++;
-    }, INTERVAL_MS);
-
-    return () => clearInterval(interval);
+    setAnimate(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   }, []);
 
   return (
@@ -56,14 +54,28 @@ export function CrownIcon({ src, size = 22, className = '' }: CrownIconProps) {
     >
       <defs>
         <filter id={filterId} x="-40%" y="-40%" width="180%" height="180%">
-          <feTurbulence
-            ref={turbulenceRef}
-            type="turbulence"
-            baseFrequency={BASE_FREQUENCY}
-            numOctaves={2}
-            seed={1}
-            result="noise"
-          />
+          <feTurbulence type="turbulence" numOctaves={2} result="noise">
+            {animate && (
+              <>
+                <animate
+                  attributeName="baseFrequency"
+                  values={FREQUENCY_VALUES}
+                  keyTimes={KEY_TIMES}
+                  dur={DUR}
+                  calcMode="discrete"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="seed"
+                  values={SEED_VALUES}
+                  keyTimes={KEY_TIMES}
+                  dur={DUR}
+                  calcMode="discrete"
+                  repeatCount="indefinite"
+                />
+              </>
+            )}
+          </feTurbulence>
           <feDisplacementMap
             in="SourceGraphic"
             in2="noise"

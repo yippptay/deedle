@@ -36,7 +36,7 @@ export default function HomePage() {
       )}
 
       <div className="border border-zinc-600 max-w-xl w-full bg-zinc-700 rounded-2xl p-8 mb-8 shadow-xl animate-fade-in-up">
-        <p className="text-xl italic text-gray-100 leading-relaxed">
+        <p className="text-lg italic text-gray-100 leading-relaxed">
           &quot;{game.quoteText}&quot;
         </p>
         <p className="mt-4 text-gray-500 text-sm text-right">
@@ -122,7 +122,7 @@ export default function HomePage() {
   </div>
 </div>
         ) : (
-          <p className="mt-10 text-gray-500 text-sm">No confidants were harmed in the making of KeksDeedle.</p>
+          <p className="mt-10 text-gray-500 text-sm text-center">No confidants were harmed in the making of KeksDeedle.</p>
         )
       )}
     </main>

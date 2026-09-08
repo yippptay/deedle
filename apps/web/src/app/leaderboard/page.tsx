@@ -42,7 +42,9 @@ export default async function LeaderboardPage() {
     .from('leaderboard')
     .select('user_id, username, avatar_url, best_streak, games_won')
     .order('best_streak', { ascending: false })
+    .order('best_streak_at', { ascending: true })
     .order('games_won', { ascending: false })
+    .order('last_win_at', { ascending: true })
     .limit(50);
 
   const first = rows?.[0];
@@ -76,7 +78,7 @@ export default async function LeaderboardPage() {
 
           {/* 2nd and 3rd — share a row */}
           {secondAndThird.length > 0 && (
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {secondAndThird.map((row, i) => (
                 <div
                   key={row.user_id}
@@ -94,7 +96,7 @@ export default async function LeaderboardPage() {
 
           {/* Everyone else — plain list */}
           {rest.length > 0 && (
-            <div className="flex flex-col divide-y divide-gray-800 mt-2">
+            <div className="flex flex-col mt-2">
               {rest.map((row, i) => (
                 <div
                   key={row.user_id}
