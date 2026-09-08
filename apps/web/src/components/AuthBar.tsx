@@ -15,7 +15,7 @@ export function AuthBar() {
         </span>
         <button
           onClick={() => signOut()}
-          className="text-xs text-gray-500 hover:text-white underline"
+          className="text-xs text-gray-500 hover:text-white underline cursor-pointer"
         >
           Sign out
         </button>

@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
       p_user_id: userId,
       p_username: username,
       p_won: correct,
+      p_avatar_url: session.user.image ?? null,
     });
   }
 
@@ -77,5 +78,6 @@ export async function POST(req: NextRequest) {
     guesses: gameSession.guesses,
     gameOver,
     author: gameOver ? quote.author : null,
+    authorNickname: gameOver ? (quote.author_nickname ?? null) : null,
   });
 }

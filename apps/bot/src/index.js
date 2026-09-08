@@ -1,7 +1,3 @@
-/* 
-    TODO:
-    - [ ] parseQuote does not parse from every case
-*/
 require('dotenv').config();
 const { Client, GatewayIntentBits, Events } = require('discord.js');
 const { createClient } = require('@supabase/supabase-js');
@@ -25,13 +21,25 @@ const client = new Client({
 // To find a message ID: enable Developer Mode (User Settings → Advanced),
 // then right-click the message → Copy Message ID.
 const BLACKLISTED_MESSAGE_IDS = new Set([
-  // '1234567890123456789', // e.g. "inside joke, doesn't read right out of context"
+  '298612232147697665',
+  '413226091852070943',
+  '298612990343905303',
+  '359587380761460747',
+  '299033918622007296',
+  '362811382300672001',
+  '1445832397525614738'
 ]);
 
 // Usernames listed here are never saved as a quote author, regardless of
 // how the quote was posted (plain text or @mention). Case-insensitive.
 const BLACKLISTED_AUTHORS = new Set([
-  'Deleted User'
+  'Deleted User',
+  'jutterflyboe',
+  'basedlokix',
+  'nc777',
+  'mricecube',
+  'sakura_haru',
+  'paran.neko'
 ]);
 
 // Avoid re-fetching the same guild member repeatedly during backfill

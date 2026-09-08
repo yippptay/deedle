@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Nav } from "@/components/Nav";
@@ -14,18 +15,24 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const skipFont = localFont({
+  src: "../../public/fonts/FOT-Skip_Std_B.otf",
+  variable: "--font-skip",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Who Said It?",
-  description: "Guess the author of your server's best quotes",
+  title: "KeksDeedle",
+  description: "Hall of shame",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${skipFont.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-gray-950">
+      <body className="min-h-full flex flex-col bg-gray-900">
         <Providers>
           <Nav />
           {children}

@@ -12,6 +12,7 @@ export interface GameState {
   solved: boolean;
   gameOver: boolean;
   revealedAuthor: string | null;
+  revealedNickname: string | null;
   loading: boolean;
   makeGuess: (author: string) => Promise<void>;
 }
@@ -23,6 +24,7 @@ export function useGame(): GameState {
   const [solved, setSolved] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [revealedAuthor, setRevealedAuthor] = useState<string | null>(null);
+  const [revealedNickname, setRevealedNickname] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,11 +34,13 @@ export function useGame(): GameState {
 
       setQuoteText(quote.text);
       setOptions(quote.options ?? []);
-      // Resume any existing progress for today, instead of assuming a fresh game
       setGuesses(quote.guesses ?? []);
       setSolved(quote.solved ?? false);
       setGameOver(quote.gameOver ?? false);
-      if (quote.author) setRevealedAuthor(quote.author);
+      if (quote.author) {
+        setRevealedAuthor(quote.author);
+        setRevealedNickname(quote.authorNickname ?? null);
+      }
       setLoading(false);
     }
     init();
@@ -55,8 +59,11 @@ export function useGame(): GameState {
     setGuesses(data.guesses);
     setSolved(data.correct);
     setGameOver(data.gameOver);
-    if (data.author) setRevealedAuthor(data.author);
+    if (data.author) {
+      setRevealedAuthor(data.author);
+      setRevealedNickname(data.authorNickname ?? null);
+    }
   }
 
-  return { quoteText, options, guesses, solved, gameOver, revealedAuthor, loading, makeGuess };
+  return { quoteText, options, guesses, solved, gameOver, revealedAuthor, revealedNickname, loading, makeGuess };
 }
