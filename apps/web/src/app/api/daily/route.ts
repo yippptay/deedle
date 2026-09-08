@@ -78,7 +78,7 @@ export async function GET() {
   let solved = false;
 
   if (session?.user) {
-    const userId = (session.user as any).id;
+    const userId = session.user.id;
     const today = new Date().toISOString().split('T')[0];
     const { data: gameSession } = await supabase
       .from('game_sessions')

@@ -15,6 +15,6 @@ export async function GET() {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  const authors = [...new Set(data.map((q: any) => q.author))].sort();
+  const authors = [...new Set(data.map((q: { author: string }) => q.author))].sort();
   return NextResponse.json({ authors });
 }

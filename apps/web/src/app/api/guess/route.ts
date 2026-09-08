@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   if (!session?.user) {
     return NextResponse.json({ error: 'Not signed in' }, { status: 401 });
   }
-  const userId = (session.user as any).id;
+  const userId = session.user.id;
   const username = session.user.name ?? 'Unknown';
 
   const { guess } = await req.json();

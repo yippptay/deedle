@@ -52,9 +52,9 @@ export default async function LeaderboardPage() {
   return (
     <main className="flex-1 bg-zinc-800 text-white flex flex-col items-center py-10 px-4">
       <h2 className="text-xl font-semibold text-gray-300 mb-1">Leaderboard</h2>
-      <p className="text-gray-500 text-sm mb-8">If you ain't first, you're last.</p>
+      <p className="text-gray-500 text-sm mb-8">If you ain&apos;t first, you&apos;re last.</p>
 
-      {error && <p className="text-red-400 text-sm">Couldn't load the leaderboard.</p>}
+      {error && <p className="text-red-400 text-sm">Couldn&apos;t load the leaderboard.</p>}
 
       {!error && (!rows || rows.length === 0) && (
         <p className="text-gray-500 mt-10 text-sm text-center">No games played yet. What is this a kill screen?</p>

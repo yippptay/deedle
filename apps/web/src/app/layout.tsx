@@ -23,7 +23,7 @@ const skipFont = localFont({
 
 export const metadata: Metadata = {
   title: "KeksDeedle",
-  description: "Hall of shame",
+  description: "something something help_desk",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

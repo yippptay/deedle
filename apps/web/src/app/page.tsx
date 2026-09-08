@@ -2,13 +2,11 @@
 
 import { useSession, signIn } from 'next-auth/react';
 import { useGame } from '@/hooks/useGame';
-import { useCountdownToReset } from '@/hooks/useCountdown';
 import { MAX_GUESSES } from '@/lib/constants';
 
 export default function HomePage() {
   const { data: session, status } = useSession();
   const game = useGame();
-  const timeUntilReset = useCountdownToReset(() => window.location.reload());
 
   if (status === 'loading' || game.loading) {
     return (
@@ -24,7 +22,7 @@ export default function HomePage() {
 
   return (
     <main className="flex-1 bg-zinc-800 text-white flex flex-col items-center py-10 px-4">
-      <h2 className="text-xl font-semibold text-gray-300 mb-6">Today's Quote</h2>
+      <h2 className="text-xl font-semibold text-gray-300 mb-6">Today&apos;s Quote</h2>
 
       {!session && (
         <div className="w-full max-w-xl bg-indigo-900/40 border border-indigo-700 rounded-xl p-4 mb-6 text-center animate-fade-in-up">
@@ -39,7 +37,7 @@ export default function HomePage() {
 
       <div className="border border-zinc-600 max-w-xl w-full bg-zinc-700 rounded-2xl p-8 mb-8 shadow-xl animate-fade-in-up">
         <p className="text-xl italic text-gray-100 leading-relaxed">
-          "{game.quoteText}"
+          &quot;{game.quoteText}&quot;
         </p>
         <p className="mt-4 text-gray-500 text-sm text-right">
           — {game.gameOver ? (
